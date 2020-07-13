@@ -150,7 +150,7 @@ function runTiming(clock, value, dest) {
       
         
 
-<KeyboardAvoidingView style={{flex:1,backgroundColor:'white',justifyContent: 'flex-end'}} behavior="height" enabled>
+<KeyboardAvoidingView style={{flex:1,backgroundColor:'white',justifyContent: 'flex-end'}} behavior="padding" enabled>
 
 {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss}> */}
         

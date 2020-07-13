@@ -144,7 +144,7 @@ function runTiming(clock, value, dest) {
     
   render() {
     return (
-<KeyboardAvoidingView style={{flex:1,backgroundColor:'white',justifyContent: 'flex-end'}} behavior="height" enabled>
+<KeyboardAvoidingView style={{flex:1,backgroundColor:'white',justifyContent: 'flex-end'}} behavior="padding" enabled>
 
       <View style={{flex: 1, backgroundColor: 'white', justifyContent: 'flex-end'}}>
           <Animated.View style={{...StyleSheet.absoluteFill, transform:[{translateY: this.bgY}]}}>
