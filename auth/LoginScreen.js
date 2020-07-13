@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet,  Dimensions, TextInput } from 'react-native';
+import { Text, View, StyleSheet,  Dimensions, TextInput, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import Animated, { Easing } from 'react-native-reanimated';
-import {TapGestureHandler, State} from 'react-native-gesture-handler';
+import {TapGestureHandler, State, TouchableWithoutFeedback} from 'react-native-gesture-handler';
 import Svg,{Image,Circle,ClipPath} from 'react-native-svg'
 const {width, height} = Dimensions.get('window');
+import * as firebase from 'firebase'
 
 //extract value from animated
 const {Value, 
@@ -50,7 +51,25 @@ function runTiming(clock, value, dest) {
     ]);
 }
 
- class CovidCare extends Component {
+
+
+ class LoginScreen extends Component {
+    
+
+
+     state = {
+        //  authMode: 'login'
+        email: "",
+        password: "",
+        errorMessage: null
+
+     }
+
+     SwithAuthMode = () => {
+         this.setState(prevState => ({
+             authMode: prevState.authMode === 'login' ? 'signup' : 'login'
+         }))
+     }
 
     constructor() {
         super()
@@ -117,11 +136,25 @@ function runTiming(clock, value, dest) {
     }
 
     
+ handleLogin = () => {
+     const {email, password} = this.state
+     firebase.auth(). signInWithEmailAndPassword(email, password). catch(error => this.setState({errorMessage: error.message}));
 
+ }
   
 
   render() {
+     
+
     return (
+      
+        
+
+<KeyboardAvoidingView style={{flex:1,backgroundColor:'white',justifyContent: 'flex-end'}} behavior="height" enabled>
+
+{/* <TouchableWithoutFeedback onPress={Keyboard.dismiss}> */}
+        
+
       <View style={{flex: 1, backgroundColor: 'white', justifyContent: 'flex-end'}}>
           <Animated.View style={{...StyleSheet.absoluteFill, transform:[{translateY: this.bgY}]}}>
 
@@ -146,9 +179,11 @@ function runTiming(clock, value, dest) {
 
           <View style={{height:height / 3, justifyContent: 'center'}}>
             <TapGestureHandler onHandlerStateChange={this.onStateChange}>
+                
                 <Animated.View style={{...styles.button, opacity: this.buttonOpacity, transform:[{translateY: this.buttonY}]}}>
                     <Text style={{ fontSize: 20, fontWeight: 'bold'}}>SIGN IN</Text>
                 </Animated.View>
+                
             </TapGestureHandler>
               
 
@@ -157,41 +192,72 @@ function runTiming(clock, value, dest) {
               </Animated.View>
 
               <Animated.View style={{zIndex:this.textInputZindex, opacity: this.TextInputOpacity, transform:[{translateY:this.textInputY}], height: height/3, ...StyleSheet.absoluteFill, top: null, justifyContent: 'center'}}>
+                <View 
+                style={styles.errorMessage}>
+                    {this.state.errorMessage && 
+                    <Text style={styles.error}>{this.state.errorMessage}</Text>}
+                    
+                     </View>
+
+
 
                 <TapGestureHandler onHandlerStateChange={this.onCloseState}>
                     <Animated.View style={styles.closeButton}>
                         <Animated.Text style={{fontSize: 15, transform:[{rotate: concat(this.rotateCross, 'deg')}]}}>X</Animated.Text>
                     </Animated.View>
 
+
+                    
+
                 </TapGestureHandler>
+
+               
 
                     <TextInput 
                     placeholder="EMAIL"
                     style={styles.textInput}
+                    autoCapitalize="none"
                     placeholderTextColor= "black" 
+                    onChangeText={email => this.setState({ email })}
+                    value={this.state.email}
                     />
 
                     <TextInput 
                     placeholder="PASSWORD"
                     style={styles.textInput}
+                    // secureTextEntry
+                    autoCapitalize="none"
                     placeholderTextColor= "black" 
+                    onChangeText={password => this.setState({ password })}
+                    value={this.state.password}
                     />     
-
+                    <TouchableOpacity onPress={this.handleLogin}>
                     <Animated.View style={styles.button}>
                         <Text style={{ fontSize:20, fontWeight:'bold'}}>SIGN IN</Text>
-                        </Animated.View>                 
+                        </Animated.View> 
+                        </TouchableOpacity> 
 
+                        <TouchableOpacity onPress={() => this.props.navigation.navigate("Register")}> 
+
+                      <Animated.View style={{ justifyContent:"center", alignItems: "center", paddingTop:10}}>
+                        <Text style={{ fontSize:12, fontWeight:'300'}}>Do Not Have An An Account?<Text style={{color:'#2E71Dc', fontWeight: '500'}}> SIGN UP</Text></Text>
+                        </Animated.View>  
+
+                    </TouchableOpacity>
                     
               </Animated.View>
 
           </View>
         
       </View>
+                        {/* </TouchableWithoutFeedback> */}
+</KeyboardAvoidingView>
+      
     );
   }
 }
 
-export default CovidCare;
+export default LoginScreen;
 
 const styles = StyleSheet.create({
     container: {
@@ -226,6 +292,7 @@ const styles = StyleSheet.create({
 
     },
     textInput: {
+        backgroundColor: 'white',
         height: 50,
         borderRadius: 25,
         borderWidth: 0.5,
@@ -233,6 +300,19 @@ const styles = StyleSheet.create({
         paddingLeft:10,
         marginVertical: 5,
         borderColor: 'rgba(0,0,0,0.2)'
-    }
+    },
+    errorMessage: {
+        height: 30,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginHorizontal: 30,
+        color: 'white'
+    }, 
+    error: {
+        color: "#E9446A",
+        fontSize: 13,
+        fontWeight: "600",
+        textAlign: "center" 
+    },
     
 })
